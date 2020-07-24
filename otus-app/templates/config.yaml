@@ -11,6 +11,6 @@ metadata:
   name: app-secret
 type: Opaque
 data:
-  POSTGRES_DB: {{ printf .Values.postgresql.postgresqlDatabase | b64enc | quote }}
-  POSTGRES_USER: {{ printf .Values.postgresql.postgresqlUsername | b64enc | quote }}
-  POSTGRES_PASSWORD: {{ printf .Values.postgresql.postgresqlPassword | b64enc | quote }}
+  POSTGRES_DB: {{ .Values.postgresql.postgresqlDatabase | b64enc | quote }}
+  POSTGRES_USER: {{ .Values.postgresql.postgresqlUsername | b64enc | quote }}
+  POSTGRES_PASSWORD: {{ .Values.postgresql.postgresqlPassword | b64enc | quote }}
