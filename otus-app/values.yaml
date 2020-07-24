@@ -84,9 +84,9 @@ tolerations: []
 
 affinity: {}
 
-externalPostgresql:
-  postgresqlUsername: YXJjaA==
-  postgresqlPassword: c2VjcmV0X3Bhc3N3b3Jk
-  postgresqlDatabase: b3R1cw==
-  postgresqlHost: "postgres"
-  postgresqlPort: "5432"
+postgresql:
+  postgresqlUsername: arch
+  postgresqlPassword: secret_password
+  postgresqlDatabase: otus
+  service:
+    port: "5432"

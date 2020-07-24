@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: app-config
 data:
-  CNFG_DB__CONNECTION__HOST: "postgres"
+  CNFG_DB__CONNECTION__HOST: {{ include "postgresql.fullname" . }}
 ---
 apiVersion: v1
 kind: Secret
@@ -11,6 +11,6 @@ metadata:
   name: app-secret
 type: Opaque
 data:
-  POSTGRES_DB: {{ .Values.externalPostgresql.postgresqlDatabase }}
-  POSTGRES_USER: {{ .Values.externalPostgresql.postgresqlUsername }}
-  POSTGRES_PASSWORD: {{ .Values.externalPostgresql.postgresqlPassword }}
+  POSTGRES_DB: {{ printf .Values.postgresql.postgresqlDatabase | b64enc | quote }}
+  POSTGRES_USER: {{ printf .Values.postgresql.postgresqlUsername | b64enc | quote }}
+  POSTGRES_PASSWORD: {{ printf .Values.postgresql.postgresqlPassword | b64enc | quote }}
