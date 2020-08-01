@@ -1,0 +1,219 @@
+{
+	"info": {
+		"_postman_id": "edcea762-0122-423b-b83b-b7df5fab8532",
+		"name": "Otus architect",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "56c44485-3879-4013-ae3c-5d8fa328f66c",
+						"exec": [
+							"const body = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"userId\", body.id);",
+							"",
+							"pm.test(\"Check is creating successful\", function () {",
+							"    var body = pm.response.json();",
+							"    pm.expect(body).to.have.property('firstName', 'Sara');",
+							"        pm.expect(body).to.have.property('lastName', 'Connor');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Sara\",\n    \"lastName\": \"Connor\",\n    \"email\": \"sara.connor@gmail.com\",\n    \"phone\": \"+380892346623\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/users",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				},
+				"description": "create User"
+			},
+			"response": []
+		},
+		{
+			"name": "update User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "10884953-fabf-4f77-a787-4bc2f02c6627",
+						"exec": [
+							"pm.test(\"Check is updating successful\", function () {",
+							"    var body = pm.response.json();",
+							"    pm.expect(body).to.have.property('firstName', 'Sara1');",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 23,\n    \"firstName\": \"Sara1\",\n    \"lastName\": \"Connor\",\n    \"email\": \"sara.connor@gmail.com\",\n    \"phone\": \"+380892346623\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3de72e17-3909-4862-bf9a-b02576df6a0f",
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get User by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "90f789ce-138e-4912-8f35-13d690e0d456",
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{userId}}"
+					]
+				},
+				"description": "get user by id"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1e73a107-0066-4e82-a2de-512fce8f9eb9",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "df379565-198b-4e3c-910b-2e161d8f9c75",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "35728308-1c07-4d93-968b-84985ee49f2b",
+			"key": "baseUrl",
+			"value": "arch.homework/otusapp/oleksii",
+			"type": "string"
+		},
+		{
+			"id": "e4ed218f-4f14-4704-95b6-59ec6629a9c2",
+			"key": "userId",
+			"value": 8,
+			"type": "number"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
