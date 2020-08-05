@@ -67,7 +67,7 @@ spec:
           readinessProbe:
             httpGet:
               port: 8000
-              path: /health
+              path: /metrics
             initialDelaySeconds: 10
             periodSeconds: 5
           resources:
