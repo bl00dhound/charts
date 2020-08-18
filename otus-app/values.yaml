@@ -8,7 +8,7 @@ image:
   repository: bl00dhound/otus_lab
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v3"
+  tag: "v4"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -40,19 +40,19 @@ securityContext:
 
 service:
   type: NodePort
-  port: 80
+  port: 8000
 
 ingress:
   enabled: true
   annotations:
-    kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    # nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/auth-url: "http://auth-service.otus-auth.svc.cluster.local:8001/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "http://$host"
+    nginx.ingress.kubernetes.io/auth-response-headers: "X-Email,X-UserId,X-FirstName,X-LastName"
   hosts:
     - host: arch.homework
       paths:
-        - /otusapp/oleksii($|/)(.*)
+        path: /users
+
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -86,7 +86,7 @@ affinity: {}
 
 metrics:
   serviceMonitor:
-    enabled: true
+    enabled: false
 
 
 postgresql:

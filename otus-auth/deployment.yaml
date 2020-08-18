@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otus-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otus-auth
+  template:
+    metadata:
+      labels:
+        app: otus-auth
+    spec:
+      containers:
+      - name: auth
+        image: bl00dhound/auth:latest
+        env:
+          - name: CNFG_DB__CONNECTION__HOST
+            valueFrom:
+              configMapKeyRef:
+                name: auth-config
+                key: CNFG_DB__CONNECTION__HOST
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: auth-secret
+                key: POSTGRES_DB
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: auth-secret
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: auth-secret
+                key: POSTGRES_PASSWORD
+          - name: ROUNDS
+            valueFrom:
+              secretKeyRef:
+                name: auth-secret
+                key: ROUNDS
+          - name: SECRET
+            valueFrom:
+              secretKeyRef:
+                name: auth-secret
+                key: SECRET
+        ports:
+          - name: http
+            containerPort: 8001
