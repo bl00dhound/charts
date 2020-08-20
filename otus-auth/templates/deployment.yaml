@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "otus-app.fullname" . }}
+  name: {{ include "otus-auth.fullname" . }}
   labels:
-    {{- include "otus-app.labels" . | nindent 4 }}
+    {{- include "otus-auth.labels" . | nindent 4 }}
 spec:
 {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
-      {{- include "otus-app.selectorLabels" . | nindent 6 }}
+      {{- include "otus-auth.selectorLabels" . | nindent 6 }}
   template:
     metadata:
     {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        {{- include "otus-app.selectorLabels" . | nindent 8 }}
+        {{- include "otus-auth.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -36,40 +36,37 @@ spec:
             - name: CNFG_DB__CONNECTION__HOST
               valueFrom:
                 configMapKeyRef:
-                  name: app-config
+                  name: auth-config
                   key: CNFG_DB__CONNECTION__HOST
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: app-secret
+                  name: auth-secret
                   key: POSTGRES_DB
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: app-secret
+                  name: auth-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: app-secret
+                  name: auth-secret
                   key: POSTGRES_PASSWORD
+            - name: ROUNDS
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: ROUNDS
+            - name: SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: SECRET
           ports:
             - name: http
-              containerPort: 8000
+              containerPort: 8001
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              port: 8000
-              path: /
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            timeoutSeconds: 2
-          readinessProbe:
-            httpGet:
-              port: 8000
-              path: /metrics
-            initialDelaySeconds: 10
-            periodSeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

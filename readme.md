@@ -1,9 +1,20 @@
 ## Install
+
+  Need to create two namespaces:
+
   ```
-  helm dependency update ./otus-app
-  helm install otus-app ./otus-app
+  kubectl create namespace otus-lab
+  kubectl create namespace otus-auth
   ```
-#  Run tests
+
+  Install services by helm:
+
+  ```
+  helm dependency update ./otus-app -n otus-lab
+  helm install otus-app ./otus-app -n otus-lab
+  helm install otus-auth ./otus-auth -n otus-auth
+  ```
+##  Run tests
   ```
   newman run ./otus_architect.postman_collection.json
   ```

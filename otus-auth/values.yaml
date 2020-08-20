@@ -1,14 +1,14 @@
-# Default values for otus-app.
+# Default values for otus-auth.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 2
+replicaCount: 1
 
 image:
-  repository: bl00dhound/otus_lab
+  repository: bl00dhound/auth
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v4"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -25,12 +25,10 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext:
-  {}
+podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -40,26 +38,22 @@ securityContext:
 
 service:
   type: NodePort
-  port: 8000
+  port: 8001
 
 ingress:
   enabled: true
   annotations:
-    nginx.ingress.kubernetes.io/auth-url: "http://otus-auth-service.otus-auth.svc.cluster.local:8001/auth"
-    nginx.ingress.kubernetes.io/auth-signin: "http://$host"
-    nginx.ingress.kubernetes.io/auth-response-headers: "X-Email,X-UserId,X-FirstName,X-LastName"
+    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
   hosts:
     - host: arch.homework
-      paths:
-        path: /users
-
+      paths: ["/login", "/logout", "/register", "/signin", "/auth"]
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
-resources:
-  {}
+resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -83,15 +77,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-metrics:
-  serviceMonitor:
-    enabled: false
-
-
-postgresql:
-  postgresqlUsername: arch
-  postgresqlPassword: secret_password
-  postgresqlDatabase: otus
-  service:
-    port: "5432"
