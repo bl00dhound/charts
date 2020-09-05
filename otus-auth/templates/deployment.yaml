@@ -38,6 +38,23 @@ spec:
                 configMapKeyRef:
                   name: auth-config
                   key: CNFG_DB__CONNECTION__HOST
+
+            - name: RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-config
+                  key: RABBITMQ_HOST
+            - name: RABBITMQ_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-config
+                  key: RABBITMQ_PORT
+            - name: RABBITMQ_DEFAULT_VHOST
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-config
+                  key: RABBITMQ_DEFAULT_VHOST
+
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
@@ -63,6 +80,17 @@ spec:
                 secretKeyRef:
                   name: auth-secret
                   key: SECRET
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: RABBITMQ_DEFAULT_USER
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: RABBITMQ_DEFAULT_PASS
+
           ports:
             - name: http
               containerPort: 8001

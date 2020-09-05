@@ -5,6 +5,7 @@
   ```
   kubectl create namespace otus-lab
   kubectl create namespace otus-auth
+  kubectl create namespace otus-rabbit
   ```
 
   Install services by helm:
@@ -14,6 +15,14 @@
   helm install otus-app ./otus-app -n otus-lab
   helm install otus-auth ./otus-auth -n otus-auth
   ```
+
+## Install RabbitMQ
+
+  ```
+  helm repo add bitnami https://charts.bitnami.com/bitnami
+  helm install otus-rabbit bitnami/rabbitmq
+  ```
+
 ##  Run tests
   ```
   newman run ./otus_architect.postman_collection.json

@@ -4,6 +4,10 @@ metadata:
   name: auth-config
 data:
   CNFG_DB__CONNECTION__HOST: otus-app-postgresql.otus-lab.svc.cluster.local
+  RABBITMQ_HOST: otus-rabbit-rabbitmq.otus-rabbit.svc
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_DEFAULT_VHOST: "/"
+
 ---
 apiVersion: v1
 kind: Secret
@@ -16,3 +20,5 @@ data:
   POSTGRES_PASSWORD: c2VjcmV0X3Bhc3N3b3Jk
   ROUNDS: MTA=
   SECRET: bXktc2VjdXJlX3NlY3JlVA==
+  RABBITMQ_DEFAULT_USER: YXJjaA==
+  RABBITMQ_DEFAULT_PASS: c3VwZXJfc2VjcmV0X3JhYmJpdA==

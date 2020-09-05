@@ -4,6 +4,9 @@ metadata:
   name: app-config
 data:
   CNFG_DB__CONNECTION__HOST: {{ include "postgresql.fullname" . }}
+  RABBITMQ_HOST: otus-rabbit-rabbitmq.otus-rabbit.svc
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_DEFAULT_VHOST: "/"
 ---
 apiVersion: v1
 kind: Secret
@@ -14,3 +17,5 @@ data:
   POSTGRES_DB: {{ .Values.postgresql.postgresqlDatabase | b64enc | quote }}
   POSTGRES_USER: {{ .Values.postgresql.postgresqlUsername | b64enc | quote }}
   POSTGRES_PASSWORD: {{ .Values.postgresql.postgresqlPassword | b64enc | quote }}
+  RABBITMQ_DEFAULT_USER: YXJjaA==
+  RABBITMQ_DEFAULT_PASS: c3VwZXJfc2VjcmV0X3JhYmJpdA==

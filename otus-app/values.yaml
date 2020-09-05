@@ -5,10 +5,10 @@
 replicaCount: 2
 
 image:
-  repository: bl00dhound/otus_lab
+  repository: bl00dhound/otus-lab
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v4"
+  tag: "v5"
 
 imagePullSecrets: []
 nameOverride: ""
