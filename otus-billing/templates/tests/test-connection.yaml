@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "otus-billing.fullname" . }}-test-connection"
+  labels:
+    {{- include "otus-billing.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "otus-billing.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
