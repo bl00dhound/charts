@@ -4,9 +4,11 @@ metadata:
   name: app-config
 data:
   CNFG_DB__CONNECTION__HOST: {{ include "postgresql.fullname" . }}
-  RABBITMQ_HOST: otus-rabbit-rabbitmq.otus-rabbit.svc
+  RABBITMQ_HOST: otus-rabbit-rabbitmq.otus-rabbit.svc.cluster.local
   RABBITMQ_PORT: "5672"
   RABBITMQ_DEFAULT_VHOST: "/"
+  BILLING_PORT: "8002"
+  BILLING_HOST: otus-billing-service.otus-billing.svc.cluster.local
 ---
 apiVersion: v1
 kind: Secret

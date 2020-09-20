@@ -27,6 +27,59 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
+        - name: {{ .Chart.Name}}-notifier
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: bl00dhound/notifier:latest
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: CNFG_DB__CONNECTION__HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-config
+                  key: CNFG_DB__CONNECTION__HOST
+            - name: RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-config
+                  key: RABBITMQ_HOST
+            - name: RABBITMQ_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-config
+                  key: RABBITMQ_PORT
+            - name: RABBITMQ_DEFAULT_VHOST
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-config
+                  key: RABBITMQ_DEFAULT_VHOST
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: POSTGRES_PASSWORD
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: RABBITMQ_DEFAULT_USER
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: RABBITMQ_DEFAULT_PASS
+
+
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -54,7 +107,6 @@ spec:
                 configMapKeyRef:
                   name: auth-config
                   key: RABBITMQ_DEFAULT_VHOST
-
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:

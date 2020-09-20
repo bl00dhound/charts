@@ -6,9 +6,8 @@ replicaCount: 1
 
 image:
   repository: bl00dhound/auth
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "v3"
+  pullPolicy: Always
+  tag: latest
 
 imagePullSecrets: []
 nameOverride: ""

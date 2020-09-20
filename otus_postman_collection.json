@@ -1,0 +1,1121 @@
+{
+	"info": {
+		"_postman_id": "edcea762-0122-423b-b83b-b7df5fab8532",
+		"name": "Otus architect",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01 Register user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "56c44485-3879-4013-ae3c-5d8fa328f66c",
+						"exec": [
+							"const body = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"id1\", body.id);",
+							"",
+							"pm.test(\"Check is create successful\", function () {",
+							"    const jwt = pm.response.headers.get('Set-Cookie').split('=')[1].split(';')[0];",
+							"    pm.collectionVariables.set('jwt1', jwt);",
+							"",
+							"",
+							"    var body = pm.response.json();",
+							"    pm.expect(body).to.have.property('firstName', pm.collectionVariables.get('firstName1'));",
+							"    pm.expect(body).to.have.property('lastName', pm.collectionVariables.get('lastName1'));",
+							"    pm.expect(body).to.have.property('email', pm.collectionVariables.get('email1'));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "806cd3bb-01de-4434-bf64-9d59e374747a",
+						"exec": [
+							"pm.collectionVariables.set(\"password1\", pm.variables.replaceIn('{{$randomPassword}}'))",
+							"pm.collectionVariables.set(\"email1\", pm.variables.replaceIn('{{$randomEmail}}'))",
+							"pm.collectionVariables.set(\"firstName1\", pm.variables.replaceIn('{{$randomFirstName}}_more'))",
+							"pm.collectionVariables.set(\"lastName1\", pm.variables.replaceIn('{{$randomLastName}}_more'))",
+							"pm.collectionVariables.set(\"phone1\", pm.variables.replaceIn('+380987867878'))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"{{firstName1}}\",\n    \"lastName\": \"{{lastName1}}\",\n    \"email\": \"{{email1}}\",\n    \"phone\": \"{{phone1}}\",\n    \"password\": \"{{password1}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/register",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"register"
+					]
+				},
+				"description": "User1 register"
+			},
+			"response": []
+		},
+		{
+			"name": "02 Can't get user1 without login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d423ef10-bd4e-45e1-aaf1-5d092a065caf",
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/users/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 User1 login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "93b7f4f0-2414-46e4-bd9e-ce75ea76d880",
+						"exec": [
+							"const body = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Login is successful\", function () {",
+							"    var body = pm.response.json();",
+							"    const jwt = pm.response.headers.get('Set-Cookie').split('=')[1].split(';')[0];",
+							"    pm.collectionVariables.set('jwt1', jwt);",
+							"",
+							"    pm.response.to.have.status(200);",
+							"    pm.expect(pm.response.headers.get('Set-Cookie')).to.be.a('string')",
+							"    pm.expect(body).to.have.property('firstName', pm.collectionVariables.get('firstName1'));",
+							"    pm.expect(body).to.have.property('lastName', pm.collectionVariables.get('lastName1'));",
+							"    pm.expect(body).to.have.property('email', pm.collectionVariables.get('email1'));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email1}}\",\n    \"password\": \"{{password1}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/login",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 User1 edit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ec49ee73-e073-4420-ae29-584a0606e0d2",
+						"exec": [
+							"const body = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Check is update successful\", function () {",
+							"    var body = pm.response.json();",
+							"    pm.expect(body).to.have.property('firstName', 'new_' + pm.collectionVariables.get('firstName1'));",
+							"    pm.expect(body).to.have.property('lastName', pm.collectionVariables.get('lastName1'));",
+							"    pm.expect(body).to.have.property('email', pm.collectionVariables.get('email1'));",
+							"    pm.expect(body).to.have.property('id', pm.collectionVariables.get('id1'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"new_{{firstName1}}\",\n    \"lastName\": \"{{lastName1}}\",\n    \"email\": \"{{email1}}\",\n    \"phone\": \"{{phone1}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/users/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05 Get user with updated data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8fd48553-e6da-4f28-a46b-1f8ed1b61565",
+						"exec": [
+							"const body = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Check is update successful\", function () {",
+							"    var body = pm.response.json();",
+							"    pm.expect(body).to.have.property('firstName', 'new_' + pm.collectionVariables.get('firstName1'));",
+							"    pm.expect(body).to.have.property('lastName', pm.collectionVariables.get('lastName1'));",
+							"    pm.expect(body).to.have.property('email', pm.collectionVariables.get('email1'));",
+							"    pm.expect(body).to.have.property('id', pm.collectionVariables.get('id1'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/users/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06 Logout User1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e89aea68-e3b5-41d9-96b7-d1bdc6e904f3",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"should remove cookie\", function () {",
+							"    const jwt = pm.response.headers.get('Set-Cookie').split('=')[1].split(';')[0];",
+							"    pm.expect(jwt).to.have.lengthOf(0)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/logout",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07 User2 register",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "192d0462-cdac-47ae-af07-6238b316380b",
+						"exec": [
+							"pm.collectionVariables.set(\"password2\", pm.variables.replaceIn('{{$randomPassword}}'))",
+							"pm.collectionVariables.set(\"email2\", pm.variables.replaceIn('{{$randomEmail}}'))",
+							"pm.collectionVariables.set(\"firstName2\", pm.variables.replaceIn('{{$randomFirstName}}_more'))",
+							"pm.collectionVariables.set(\"lastName2\", pm.variables.replaceIn('{{$randomLastName}}_more'))",
+							"pm.collectionVariables.set(\"phone2\", pm.variables.replaceIn('+380987864478'))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5bf3ad1c-ef4b-413a-97c2-88ae32d91368",
+						"exec": [
+							"const body = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"id2\", body.id);",
+							"",
+							"pm.test(\"Check is create successful\", function () {",
+							"    const jwt = pm.response.headers.get('Set-Cookie').split('=')[1].split(';')[0];",
+							"    pm.collectionVariables.set('jwt2', jwt);",
+							"",
+							"",
+							"    var body = pm.response.json();",
+							"    pm.expect(body).to.have.property('firstName', pm.collectionVariables.get('firstName2'));",
+							"    pm.expect(body).to.have.property('lastName', pm.collectionVariables.get('lastName2'));",
+							"    pm.expect(body).to.have.property('email', pm.collectionVariables.get('email2'));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"{{firstName2}}\",\n    \"lastName\": \"{{lastName2}}\",\n    \"email\": \"{{email2}}\",\n    \"phone\": \"{{phone2}}\",\n    \"password\": \"{{password2}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/register",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08 User2 login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "48efec2a-337b-48bf-8736-769fe93a2b05",
+						"exec": [
+							"const body = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Login is successful\", function () {",
+							"    var body = pm.response.json();",
+							"    const jwt = pm.response.headers.get('Set-Cookie').split('=')[1].split(';')[0];",
+							"    pm.collectionVariables.set('jwt2', jwt);",
+							"",
+							"    pm.response.to.have.status(200);",
+							"    pm.expect(pm.response.headers.get('Set-Cookie')).to.be.a('string')",
+							"    pm.expect(body).to.have.property('firstName', pm.collectionVariables.get('firstName2'));",
+							"    pm.expect(body).to.have.property('lastName', pm.collectionVariables.get('lastName2'));",
+							"    pm.expect(body).to.have.property('email', pm.collectionVariables.get('email2'));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email2}}\",\n    \"password\": \"{{password2}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/login",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "09 Get User1 by User2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "42e109cc-ade6-4b23-bc2a-ba51a3d19b52",
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Forbidden\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/users/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10 Update User1 by User2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5f18852a-8f9a-45d3-9ae8-e556e52f3987",
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Forbidden\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"{{firstName2}}\",\n    \"lastName\": \"{{lastName2}}\",\n    \"email\": \"{{email2}}\",\n    \"phone\": \"{{phone2}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/users/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11 Check billing account of User1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ad2b3e83-f022-427f-b2da-4370df5cccdf",
+						"exec": [
+							"pm.test(\"Check account creation\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body.balance).to.eql(\"0.00\");",
+							"    pm.expect(body.user_id).to.eql(pm.collectionVariables.get('id1'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/users/account/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"account",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12 Replenish balance User1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3db3d121-95bc-40ab-8838-5408ce466d5e",
+						"exec": [
+							"pm.test(\"Check is request success\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body.ok).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 50\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/users/account/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"account",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "13 Check billing account of User1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d34941f0-b683-4fed-958d-5cdf9bfa714b",
+						"exec": [
+							"pm.test(\"Should be equal 50.00\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body.balance).to.eql(\"50.00\");",
+							"    pm.expect(body.user_id).to.eql(pm.collectionVariables.get('id1'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/users/account/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"account",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "14 Create order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "232daded-9d09-475c-aec8-e4a43bcf393b",
+						"exec": [
+							"pm.test(\"Should create order\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body).to.have.property('orderId');",
+							"    pm.expect(body).to.have.property('status', 'pending');",
+							"    pm.collectionVariables.set('orderId1', body.orderId);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 25\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/users/order/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"order",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "15 Check billing account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7d3f235a-90a1-4748-b931-29bd937a122d",
+						"exec": [
+							"pm.test(\"Should be equal 25.00\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body.balance).to.eql(\"25.00\");",
+							"    pm.expect(body.user_id).to.eql(pm.collectionVariables.get('id1'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/users/account/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"account",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "16 Check notification creating",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e73daa29-3682-4727-ad0c-fe6079b8dd2d",
+						"exec": [
+							"pm.test(\"Check order creation notification\", function () {",
+							"    const body = pm.response.json();",
+							"    const billingMsg = body[0];",
+							"    const orderMsg = body[1];",
+							"    pm.expect(billingMsg.user_id).to.eql(pm.collectionVariables.get('id1'));",
+							"    pm.expect(billingMsg.event).to.eql('billing:success')",
+							"    pm.expect(billingMsg.message).to.eql(`Balance of user #${pm.collectionVariables.get('id1')} was successfully updated: 25.00`);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/notification/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notification",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "17 Create too expensive order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c82bae1c-c392-41a2-9597-2301be5ddf26",
+						"exec": [
+							"pm.test(\"Should create order\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body).to.have.property('orderId');",
+							"    pm.expect(body).to.have.property('status', 'pending');",
+							"    pm.collectionVariables.set('orderId2', body.orderId);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 55\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/users/order/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"order",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "18 Check billing acount of User1 after failing order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4a54be7a-2ae2-4d35-9957-83f02cb12dcb",
+						"exec": [
+							"pm.test(\"Should be equal 25.00\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body.balance).to.eql(\"25.00\");",
+							"    pm.expect(body.user_id).to.eql(pm.collectionVariables.get('id1'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/users/account/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"account",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "19 Check notification creating",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "49eba46b-37fe-4c13-8f38-368b1ed9144a",
+						"exec": [
+							"pm.test(\"Check failed order notification\", function () {",
+							"    const body = pm.response.json();",
+							"    const billingMsg = body[0];",
+							"    const orderMsg = body[1];",
+							"",
+							"    pm.expect(orderMsg.user_id).to.eql(pm.collectionVariables.get('id1'));",
+							"    pm.expect(billingMsg.user_id).to.eql(pm.collectionVariables.get('id1'));",
+							"",
+							"    pm.expect(billingMsg.event).to.eql('billing:failed')",
+							"    pm.expect(orderMsg.event).to.eql('user:createOrder')",
+							"",
+							"    pm.expect(orderMsg.message).to.eql(`Order #${pm.collectionVariables.get('orderId2')} was placed.`);",
+							"    pm.expect(billingMsg.message).to.eql(`Change balance of user #${pm.collectionVariables.get('id1')} was failed. Changes weren't applied.`);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/notification/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notification",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1e73a107-0066-4e82-a2de-512fce8f9eb9",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "df379565-198b-4e3c-910b-2e161d8f9c75",
+				"type": "text/javascript",
+				"exec": [
+					"tests[\"[INFO] Request: \" + (('data' in request) ? (Object.keys(request.data).length ? request.data : '{}') : '') ] = true;",
+					"tests[\"[INFO] Response: \" + responseBody] = true;"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "3c5cfbeb-0a86-4f41-b7cd-e0f6a614aae8",
+			"key": "userId",
+			"value": 40,
+			"disabled": true
+		},
+		{
+			"id": "b4ae4ed7-49c3-44a9-b65c-028eb9764535",
+			"key": "baseUrl",
+			"value": "arch.homework"
+		},
+		{
+			"id": "76d8a3d2-4386-4172-9f71-933a20b3f185",
+			"key": "firstName1",
+			"value": "Berry_more"
+		},
+		{
+			"id": "da2e71c1-b0c7-4181-9048-33fc7aafde09",
+			"key": "lastName1",
+			"value": "Volkman_more"
+		},
+		{
+			"id": "84a50f72-f97a-43f5-93c6-bc7378678070",
+			"key": "phone1",
+			"value": "+380987867878"
+		},
+		{
+			"id": "76849c8d-c8ba-4fc3-8fad-9338369db1d9",
+			"key": "email1",
+			"value": "Derek4@gmail.com"
+		},
+		{
+			"id": "0ff547c6-f69a-4cd5-8ff0-b05b692c0f2c",
+			"key": "password1",
+			"value": "FvITolYesN7NcgU"
+		},
+		{
+			"id": "1b946718-ce28-40d7-9846-26ba430f267d",
+			"key": "id1",
+			"value": 86
+		},
+		{
+			"id": "4fa27c9f-6c76-4cda-91a6-21965fab4c77",
+			"key": "jwt1",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDA2NTg2MTUsImRhdGEiOnsiaWQiOjg2LCJlbWFpbCI6IkRlcmVrNEBnbWFpbC5jb20ifSwiaWF0IjoxNjAwNTcyMjE1fQ.HgfCPN5jTUHmf4eYZxCUSoOg_yUFQ63CF_BV46403As"
+		},
+		{
+			"id": "2a5d5736-243b-475d-b439-10238690ef87",
+			"key": "firstName2",
+			"value": "Paige_more"
+		},
+		{
+			"id": "92e239ea-92d8-48c9-b014-6ef2fdc1431b",
+			"key": "lastName2",
+			"value": "Swaniawski_more"
+		},
+		{
+			"id": "297402bc-0b45-4fd5-aa57-f3848edcdd03",
+			"key": "phone2",
+			"value": "+380987864478"
+		},
+		{
+			"id": "e2a30555-e056-4596-9874-1154818f77ae",
+			"key": "email2",
+			"value": "Agnes66@hotmail.com"
+		},
+		{
+			"id": "29089066-1824-4ebd-b289-ced23285be1c",
+			"key": "password2",
+			"value": "FSifdJAJFhfEnTR"
+		},
+		{
+			"id": "f18e1447-c7f0-4489-b9a8-4a1062f04d24",
+			"key": "id2",
+			"value": 62
+		},
+		{
+			"id": "e83261d5-0094-4ad6-97fa-bb5d35ced178",
+			"key": "jwt2",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTc5Nzk3NjgsImRhdGEiOnsiaWQiOjYyLCJlbWFpbCI6IkFnbmVzNjZAaG90bWFpbC5jb20ifSwiaWF0IjoxNTk3ODkzMzY4fQ.2F868398FM97_USYv8qGezvXD_0ZPM80JYv7SoHYqU0"
+		},
+		{
+			"id": "0b255020-0f48-4f99-ade5-7e8d486811d9",
+			"key": "orderId1",
+			"value": 3
+		},
+		{
+			"id": "65e5451f-8441-4f7e-b387-e7670179be61",
+			"key": "orderId2",
+			"value": 5
+		}
+	],
+	"protocolProfileBehavior": {}
+}

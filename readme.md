@@ -1,37 +1,34 @@
 ## Install
 
-  Need to create two namespaces:
+  Create namespaces
 
   ```
-  kubectl create namespace otus-lab
-  kubectl create namespace otus-auth
-  kubectl create namespace otus-rabbit
+  make create-namespaces
   ```
 
-  Install services by helm:
+  Install services
 
   ```
-  helm dependency update ./otus-app -n otus-lab
-  helm install otus-app ./otus-app -n otus-lab
-  helm install otus-auth ./otus-auth -n otus-auth
+  make install
   ```
 
-## Install RabbitMQ
-
+  Share database port for local development
   ```
-  helm repo add bitnami https://charts.bitnami.com/bitnami
-  helm install otus-rabbit bitnami/rabbitmq
+  kubectl port-forward --namespace otus-lab service/otus-app-postgresql 5432:5432
   ```
 
 ##  Run tests
   ```
-  newman run ./otus_architect.postman_collection.json
+  make test
   ```
 
 ### Install monitoring
   ```
-  helm repo add stable https://kubernetes-charts.storage.googleapis.com
-  helm repo update
-  helm install prom stable/prometheus-operator -f prometheus.yaml --atomic
-  helm install nginx stable/nginx-ingress -f monitoring/nginx-ingress.yaml --atomic
+  make install-monitoring
+  ```
+
+### Remove services
+  ```
+  make delete-all
+  make delete-namespaces
   ```
