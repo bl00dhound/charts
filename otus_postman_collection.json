@@ -711,6 +711,18 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b1c6f065-ef21-4ac2-b19b-54530406cc67",
+						"exec": [
+							"const uuid = require('uuid');",
+							"",
+							"pm.collectionVariables.set(\"xRequestId\", pm.variables.replaceIn(uuid.v4()))"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -725,10 +737,78 @@
 					]
 				},
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "x-request-id",
+						"value": "{{xRequestId}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"amount\": 25\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/users/order/{{id1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"order",
+						"{{id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "14.1 Add order with existing XRequestId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "955b1737-37f8-40a7-a5d9-4f901077e5d9",
+						"exec": [
+							"pm.test(\"Should return previous created order\", function () {",
+							"    const body = pm.response.json();",
+							"    pm.expect(body).to.have.property('orderId');",
+							"    pm.expect(body).to.have.property('status', 'pending');",
+							"    pm.expect(body.orderId).to.eql(pm.collectionVariables.get('orderId1'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-request-id",
+						"value": "{{xRequestId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 10\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -861,6 +941,18 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f04c0427-729c-4e20-9fc2-1d2d69c13a9c",
+						"exec": [
+							"const uuid = require('uuid');",
+							"",
+							"pm.collectionVariables.set(\"xRequestId\", pm.variables.replaceIn(uuid.v4()))"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -875,7 +967,13 @@
 					]
 				},
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "x-request-id",
+						"value": "{{xRequestId}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"amount\": 55\n}",
@@ -1026,95 +1124,100 @@
 	],
 	"variable": [
 		{
-			"id": "3c5cfbeb-0a86-4f41-b7cd-e0f6a614aae8",
+			"id": "88ea2d0e-4cc4-4658-b71f-778a8aec92f3",
 			"key": "userId",
 			"value": 40,
 			"disabled": true
 		},
 		{
-			"id": "b4ae4ed7-49c3-44a9-b65c-028eb9764535",
+			"id": "732975d9-bf76-4ce7-b5ee-0e663ab4a62e",
 			"key": "baseUrl",
 			"value": "arch.homework"
 		},
 		{
-			"id": "76d8a3d2-4386-4172-9f71-933a20b3f185",
+			"id": "10084fec-0fed-4500-9c20-681e4be459b5",
 			"key": "firstName1",
-			"value": "Berry_more"
+			"value": "Bessie_more"
 		},
 		{
-			"id": "da2e71c1-b0c7-4181-9048-33fc7aafde09",
+			"id": "c33035e8-d9d2-4311-ae08-cf2f13133b18",
 			"key": "lastName1",
-			"value": "Volkman_more"
+			"value": "Watsica_more"
 		},
 		{
-			"id": "84a50f72-f97a-43f5-93c6-bc7378678070",
+			"id": "d2101584-7cf0-446a-b7ec-b4ad0ce98535",
 			"key": "phone1",
 			"value": "+380987867878"
 		},
 		{
-			"id": "76849c8d-c8ba-4fc3-8fad-9338369db1d9",
+			"id": "eb949fb0-c217-40ff-85ef-3d8e7cc54eb7",
 			"key": "email1",
-			"value": "Derek4@gmail.com"
+			"value": "Otilia0@yahoo.com"
 		},
 		{
-			"id": "0ff547c6-f69a-4cd5-8ff0-b05b692c0f2c",
+			"id": "d878d595-efee-4b7c-b578-dec5916bd5da",
 			"key": "password1",
-			"value": "FvITolYesN7NcgU"
+			"value": "swoRLNoF9d6nzlR"
 		},
 		{
-			"id": "1b946718-ce28-40d7-9846-26ba430f267d",
+			"id": "27aa1958-7be0-4363-a334-09a24c1cab69",
 			"key": "id1",
-			"value": 86
+			"value": 8
 		},
 		{
-			"id": "4fa27c9f-6c76-4cda-91a6-21965fab4c77",
+			"id": "d4fc713d-eeb4-473f-aae9-2e57cc552a0b",
 			"key": "jwt1",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDA2NTg2MTUsImRhdGEiOnsiaWQiOjg2LCJlbWFpbCI6IkRlcmVrNEBnbWFpbC5jb20ifSwiaWF0IjoxNjAwNTcyMjE1fQ.HgfCPN5jTUHmf4eYZxCUSoOg_yUFQ63CF_BV46403As"
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDEyMzM0MDYsImRhdGEiOnsiaWQiOjgsImVtYWlsIjoiT3RpbGlhMEB5YWhvby5jb20ifSwiaWF0IjoxNjAxMTQ3MDA2fQ.2Lvwg__BY7NuJyRiKXXs-vVAnC-AZx4WH54QzNcElqU"
 		},
 		{
-			"id": "2a5d5736-243b-475d-b439-10238690ef87",
+			"id": "0423bd7a-42b5-4187-8c64-996e42e612c5",
 			"key": "firstName2",
-			"value": "Paige_more"
+			"value": "Nicolette_more"
 		},
 		{
-			"id": "92e239ea-92d8-48c9-b014-6ef2fdc1431b",
+			"id": "fc683dce-282e-4f34-b4e2-b59c14c48a76",
 			"key": "lastName2",
-			"value": "Swaniawski_more"
+			"value": "Stracke_more"
 		},
 		{
-			"id": "297402bc-0b45-4fd5-aa57-f3848edcdd03",
+			"id": "d77de4d9-4636-4432-acf4-9bcb4de74a99",
 			"key": "phone2",
 			"value": "+380987864478"
 		},
 		{
-			"id": "e2a30555-e056-4596-9874-1154818f77ae",
+			"id": "11c2fab6-3eb9-465b-b114-594891cf51ba",
 			"key": "email2",
-			"value": "Agnes66@hotmail.com"
+			"value": "Kiley.Koss39@hotmail.com"
 		},
 		{
-			"id": "29089066-1824-4ebd-b289-ced23285be1c",
+			"id": "4a5b8cbb-3522-4a0a-99dd-c7daf284b2bc",
 			"key": "password2",
-			"value": "FSifdJAJFhfEnTR"
+			"value": "Fdl66ATfXqJ9K0I"
 		},
 		{
-			"id": "f18e1447-c7f0-4489-b9a8-4a1062f04d24",
+			"id": "68adf437-3e4e-4cde-a5f2-0120a7716981",
 			"key": "id2",
-			"value": 62
+			"value": 9
 		},
 		{
-			"id": "e83261d5-0094-4ad6-97fa-bb5d35ced178",
+			"id": "8e7f4cb8-c3d6-40fb-ad9e-33fb6c337266",
 			"key": "jwt2",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTc5Nzk3NjgsImRhdGEiOnsiaWQiOjYyLCJlbWFpbCI6IkFnbmVzNjZAaG90bWFpbC5jb20ifSwiaWF0IjoxNTk3ODkzMzY4fQ.2F868398FM97_USYv8qGezvXD_0ZPM80JYv7SoHYqU0"
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDEyMzM0MTgsImRhdGEiOnsiaWQiOjksImVtYWlsIjoiS2lsZXkuS29zczM5QGhvdG1haWwuY29tIn0sImlhdCI6MTYwMTE0NzAxOH0.2bU3cxAGpXgX2lu107XqnelLooD3PQim_-S5jRMGxaI"
 		},
 		{
-			"id": "0b255020-0f48-4f99-ade5-7e8d486811d9",
+			"id": "fea0eb50-4a69-4ac6-b943-07ceda2da6a4",
 			"key": "orderId1",
-			"value": 3
+			"value": 22
 		},
 		{
-			"id": "65e5451f-8441-4f7e-b387-e7670179be61",
+			"id": "868dca07-35f8-4cbd-94d1-a90072b80deb",
 			"key": "orderId2",
-			"value": 5
+			"value": 17
+		},
+		{
+			"id": "9a4c2278-ecbd-4c2c-a5e2-a3f8ea10775d",
+			"key": "xRequestId",
+			"value": "0a36697e-ae2d-4e5f-b512-2927e194f6b4"
 		}
 	],
 	"protocolProfileBehavior": {}
